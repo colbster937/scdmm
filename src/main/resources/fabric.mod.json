@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod.iden}",
+  "name": "${mod.name}",
+  "version": "${mod.vers}",
+  "icon": "assets/${mod.iden}/icon.png",
+  "depends": {
+    "${mod.dpnd}": "*"
+  },
+  "license": "${mod.lcns}",
+  "authors": ["${mod.athr}"],
+  "contact": {
+    "homepage": "${mod.site}"
+  }
+}
