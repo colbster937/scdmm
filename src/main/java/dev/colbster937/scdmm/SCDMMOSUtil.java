@@ -64,21 +64,23 @@ public enum SCDMMOSUtil {
     int score = 0;
 
     for (final SCDMMOSUtil os : values()) {
-      int _score = 0;
+      if (!mobile || os.mobile) {
+        int _score = 0;
 
-      for (String term : os.terms) {
-        if (info.contains(term)) {
-          _score += 2;
+        for (String term : os.terms) {
+          if (info.contains(term)) {
+            _score += 2;
+          }
         }
-      }
 
-      if (os.mobile && mobile) {
-        _score++;
-      }
+        if (os.mobile && mobile) {
+          _score++;
+        }
 
-      if (_score > score) {
-        ret = os;
-        score = _score;
+        if (_score > score) {
+          ret = os;
+          score = _score;
+        }
       }
     }
 
