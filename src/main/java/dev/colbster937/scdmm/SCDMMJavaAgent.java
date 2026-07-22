@@ -33,7 +33,5 @@ public final class SCDMMJavaAgent {
     }
 
     System.setProperty("fabric.addMods", String.join(File.pathSeparator, addMods));
-
-    System.out.println(System.getProperty("fabric.addMods"));
   }
 }
