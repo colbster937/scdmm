@@ -27,7 +27,10 @@ public final class SCDMMJavaAgent {
       }
     }
 
-    addMods.addAll(0, Arrays.asList(System.getProperty("fabric.addMods").split(File.pathSeparator)));
+    final String prop = System.getProperty("fabric.addMods");
+    if (prop != null) {
+      addMods.addAll(0, Arrays.asList(prop.split(File.pathSeparator)));
+    }
 
     System.setProperty("fabric.addMods", String.join(File.pathSeparator, addMods));
 
