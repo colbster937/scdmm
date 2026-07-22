@@ -30,6 +30,7 @@ jobs:
           echo "AFCT=$(mvn git-commit-id:revision help:evaluate -Dexpression=project.build.finalName -q -DforceStdout)" >> "$GITHUB_OUTPUT"
           echo "VERS=$(mvn git-commit-id:revision help:evaluate -Dexpression=mod.vers -q -DforceStdout)" >> "$GITHUB_OUTPUT"
           echo "IDEN=$(mvn help:evaluate -Dexpression=mod.iden -q -DforceStdout)" >> "$GITHUB_OUTPUT"
+          echo "DPND=$(mvn help:evaluate -Dexpression=mod.dpnd -q -DforceStdout)" >> "$GITHUB_OUTPUT"
       - run: mvn -B -DskipTests package
       - uses: actions/upload-artifact@v7
         with:
@@ -42,12 +43,13 @@ jobs:
       - id: mrinfo
         if: ${{ steps.mrtoken.outputs.STATUS == 'true' }}
         run: |
-          echo "PROJECT_ID=$(curl -s "https://api.modrinth.com/v2/project/${{ steps.vars.outputs.IDEN }}" -H "Authorization: Bearer ${{ secrets.MODRINTH_TOKEN }}" | jq -r '.id')" >> "$GITHUB_OUTPUT"
+          echo "A_PROJECT_ID=$(curl -s "https://api.modrinth.com/v2/project/${{ steps.vars.outputs.IDEN }}" -H "Authorization: Bearer ${{ secrets.MODRINTH_TOKEN }}" | jq -r '.id')" >> "$GITHUB_OUTPUT"
+          echo "B_PROJECT_ID=$(curl -s "https://api.modrinth.com/v2/project/${{ steps.vars.outputs.DPND }}" -H "Authorization: Bearer ${{ secrets.MODRINTH_TOKEN }}" | jq -r '.id')" >> "$GITHUB_OUTPUT"
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.mrtoken.outputs.STATUS == 'true'
         uses: cloudnode-pro/modrinth-publish@v2
         with:
           token: ${{ secrets.MODRINTH_TOKEN }}
-          project: ${{ steps.mrinfo.outputs.PROJECT_ID }}
+          project: ${{ steps.mrinfo.outputs.A_PROJECT_ID }}
           version: ${{ steps.vars.outputs.VERS }}
           loaders: '["fabric", "legacy-fabric", "ornithe"]'
           game-versions: '["1.6.x", "1.7.x", "1.8.x", "1.9.x", "1.10.x", "1.11.x", "1.12.x", "1.13.x", "1.14.x", "1.15.x", "1.16.x", "1.17.x", "1.18.x", "1.19.x", "1.20.x", "1.21.x", "26.1.x", "26.2"]'
@@ -55,3 +57,8 @@ jobs:
           primary-file: ${{ steps.vars.outputs.AFCT }}.jar
           name: ${{ steps.vars.outputs.VERS }}
           channel: 'beta'
+          dependencies: |-
+            [{
+                "project_id": "${{ steps.mrinfo.outputs.B_PROJECT_ID }}",
+                "dependency_type": "required"
+            }]
