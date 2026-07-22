@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class SCDMMJavaAgent {
-  public static final Path BASE_PATH = Paths.get("mods", "scdm");
+  public static final Path BASE_PATH = Paths.get("mods", "scdmm");
 
   public static void premain(final String args) {
     final List<String> addMods = new ArrayList<>(SCDMMOSUtil.getModDirs());
